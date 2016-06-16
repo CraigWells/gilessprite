@@ -4,16 +4,16 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Polling GraphS</title>
+        <title>Game Test</title>
         <base href="http://localhost:8081/" target="_blank">
-        <!--link rel="stylesheet" type="text/css" href="css/bootstrap.css"/-->
         <link rel="stylesheet" type="text/css" href="css/style.css"/>
     </head>
-    <body ng-app="beanApp">
+    <body ng-app="gameApp">
             <div ng-controller="MainCtrl as main" class="container">
-                <graph></graph>
+                <gamearea></gamearea>
             </div>
-            <script src="js/anime-poly.js"></script>
+            <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+            <script src="https://code.createjs.com/tweenjs-0.6.2.min.js"></script>
             <script src="js/angular.min.js"></script>
             <script src="js/script-angular.js"></script>
         </body>
