@@ -1,0 +1,37 @@
+﻿<div ng-controller="graphCtrl" class="wrapper">
+	<div class="left">
+		<canvas id="mycanvas" height="580" width="620" style="border:1px solid"></canvas>
+	</div>	
+	<div class="middle">
+		<button ng-if="!graph.isActive()" ng-click="graph.start();" class="controls play">
+            <img src="images/play.png"/>
+        </button>   
+        <button ng-if="graph.isActive()" ng-click="graph.stop();" class="controls pause">
+            <img src="images/pause.png"/>
+        </button> 
+        <button ng-if="!graph.isActive()" ng-click="graph.reset();" class="controls refresh">
+            <img src="images/refresh.png"/>
+        </button> 	
+    </div>
+    <div class="right">
+    	<h1 class="rtd-h1">Real-time Data Simulation</h1>
+        <div class="table">
+            <div class="row a">
+                <div class="label cell">Current value</div>
+                <div class="cell">some value</div>
+            </div>  
+            <div class="row b">
+                <div class="label cell">Previous value</div>
+                <div class="cell">some value</div>
+            </div>
+            <div class="row a">
+                <div class="label cell">Diff</div>
+                <div class="cell">some value</div>
+            </div>
+            <div class="row b">
+                <div class="label cell">Diff %</div>
+                <div class="cell">some value</div>
+            </div>
+        </div>
+    </div>
+</div>
