@@ -13,11 +13,37 @@
     'use strict';
     var gameApp = angular.module('gameApp', [])
 
-    .controller('MainCtrl', ['$scope', function($scope) {}])
+    gameApp.directive('shortcut', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: true,
+            link:    function postLink(scope, iElement, iAttrs){
+                jQuery(document).on('keypress', function(e){
+                    scope.$apply(scope.keyPressed(e));
+                });
+            }
+        };
+    });
+
+    /* Declare the graph directive as Element type */
+    gameApp.directive('gamearea', function() {      
+        return {
+            restrict: 'E',
+            templateUrl: 'views/canvas.html'
+        }
+    });
+
+    gameApp.controller('MainCtrl', ['$scope', 'sprite', function($scope, sprite) {
+        $scope.keyPressed = function(e) {
+            console.log(e.which);
+            sprite.move();
+        };
+    }]);
     /* 
         graphCtrl, keep it slim! 
     */
-    .controller('gameCtrl', ['$scope', 'sprite', function($scope, sprite) {
+    gameApp.controller('gameCtrl', ['$scope', 'sprite', function($scope, sprite) {
         var stage = new createjs.Stage("gameCanvas");
         sprite.bindToStage(stage);
         stage.addChild(sprite.getSprite());
@@ -30,7 +56,7 @@
         circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
         circle.x = 100;
         circle.y = 100;
-
+/*
         createjs.Tween.get(circle, { loop: false })
         .to({ x: 400 }, 1000, createjs.Ease.getPowInOut(4));
         createjs.Ticker.setFPS(60);
@@ -42,7 +68,7 @@
                 console.log("East");
             }
         }, stage);
-
+*/
         return {
             bindToStage : function(stageIn){
                 stage = stageIn;
@@ -52,17 +78,14 @@
             },
             updateSprite : function(spriteIn){
                 circle = spriteIn;
+            },
+            move : function(){
+                createjs.Tween.get(circle, { loop: false })
+                .to({ x: 400 }, 1000, createjs.Ease.getPowInOut(4));
+                createjs.Ticker.setFPS(60);
+                createjs.Ticker.addEventListener("tick", stage);
             }
-
         };   
     });    
-
-    /* Declare the graph directive as Element type */
-    gameApp.directive('gamearea', function() {      
-        return {
-            restrict: 'E',
-            templateUrl: 'views/canvas.html'
-        }
-    });
 
 })(window.angular);
