@@ -1,65 +1,19 @@
-﻿// Copyright 2013 William Malone (www.williammalone.com)
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
- 
-(function() {
-    // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-    // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-    // requestAnimationFrame polyfill by Erik MÃ¶ller. fixes from Paul Irish and Tino Zijdel
-    // MIT license
-
-    var lastTime = 0;
-    var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
-                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
-    }
- 
-    if (!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
-              timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
- 
-    if (!window.cancelAnimationFrame)
-        window.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
-}());
-
-(function () {
+﻿(function () {
             
-    var coin,
-        coinImage,
+    var giles,
+        gilesImage,
         canvas;                
 
     function gameLoop () {
     
         window.requestAnimationFrame(gameLoop);
-        switch(coin.status){
-            case "lr":
-                coin.update();
-                coin.render();
-            break;
-            case "rl":
+        switch(giles.status){
+            case "walking":
+                giles.update();
+                giles.render();
             break;
             default: 
-                coin.still();
+                giles.still();
             break;
         };
     }
@@ -80,13 +34,9 @@
 
         
         that.update = function () {
-
             tickCount += 1;
-
             if (tickCount > ticksPerFrame) {
-
                 tickCount = 0;
-                
                 // If the current frame index is in range
                 if (frameIndex < numberOfFrames - 1) {  
                     // Go to the next frame
@@ -98,15 +48,13 @@
         };
         
         that.render = function () {
-        
           // Clear the canvas
           that.context.clearRect(0, 0, that.width, that.height);
-          
           // Draw the animation
           that.context.drawImage(
             that.image,
             frameIndex * that.width / numberOfFrames,
-            276,
+            0,
             that.width / numberOfFrames,
             that.height,
             0,
@@ -116,10 +64,8 @@
         };
 
         that.still = function () {
-        
           // Clear the canvas
           that.context.clearRect(0, 0, that.width, that.height);
-          
           // Draw the animation
           that.context.drawImage(
             that.image,
@@ -140,52 +86,39 @@
             console.log("Stopped");
         };
 
-        that.spinLr = function (){
+        that.walk = function (){
             // Clear the canvas
-            that.status = "lr";
-            console.log("Spin lr");
-        };
-
-        that.spinRl = function (){
-            // Clear the canvas
-            that.status = "rl";
-            console.log("Spin rl");
+            that.status = "walking";
+            console.log("walking");
         };
         
         return that;
     }
     
     // Get canvas
-    canvas = document.getElementById("coinAnimation");
-    canvas.width = 100;
-    canvas.height = 100;
+    canvas = document.getElementById("gilesSprite");
+    canvas.width = 128;
+    canvas.height = 128;
     
-    // Create sprite sheet
-    coinImage = new Image(); 
-    //coinImage.src = "images/coin-sprite-animation.png";   
-    coinImage.src = "images/new-sprite.png";  
+    gilesImage = new Image();  
+    gilesImage.src = "images/Giles7_4x.png";  
     
     // Create sprite
-    coin = sprite({
+    giles = sprite({
         context: canvas.getContext("2d"),
-       // width: 1000,
-        //height: 100,
-        width: 720,
-        height: 92,
-        image: coinImage,
-        numberOfFrames: 8,
-        ticksPerFrame: 4
+        width: 512,
+        height: 128,
+        image: gilesImage,
+        numberOfFrames: 4,
+        ticksPerFrame: 24
     });
     
     // Load sprite sheet
-    var spinLrButton = document.getElementById("spinLr");
-    spinLrButton.addEventListener("click", coin.spinLr);
-
-    var spinRlButton = document.getElementById("spinRl");
-    spinRlButton.addEventListener("click", coin.spinRl);
+    var spinLrButton = document.getElementById("walk");
+    spinLrButton.addEventListener("click", giles.walk);
 
     var stopButton = document.getElementById("stop");
-    stopButton.addEventListener("click", coin.stop);
+    stopButton.addEventListener("click", giles.stop);
 
     gameLoop();
 
