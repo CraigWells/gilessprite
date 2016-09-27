@@ -2,6 +2,14 @@ function keyboardEventsHandler(game, player){
 	window.addEventListener("keydown", function(event){
 		if(game.get("state") == "running"){
 			actionFilter(event.code);
+			event.preventDefault();
+		};
+	});
+
+	window.addEventListener("keyup", function(event){
+		if(game.get("state") == "running"){
+			console.log("stop");
+			player.stop();
 		};
 	});
 	// event.type must be keypress
@@ -15,8 +23,9 @@ function keyboardEventsHandler(game, player){
 			case "KeyD":
 				player.right();
 				break;
-			case "Space":
+			case "Space": // Arrow Up
 				player.jump();	
+				break;
 			default:
 				break;
 		}
