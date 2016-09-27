@@ -3,6 +3,7 @@ function keyboardEventsHandler(game, player){
 		if(game.get("state") == "running"){
 			actionFilter(event.code);
 			event.preventDefault();
+			console.log(player.getGlobalPosition());
 		};
 	});
 
@@ -23,7 +24,7 @@ function keyboardEventsHandler(game, player){
 			case "KeyD":
 				player.right();
 				break;
-			case "Space": // Arrow Up
+			case "Space": 
 				player.jump();	
 				break;
 			default:

@@ -1,4 +1,4 @@
-﻿(function () {
+﻿(function (playerSettings) {
             
     var game
         ,canvas
@@ -19,7 +19,7 @@
         infoBox = new InfoBox();
         infoBox.drawBox("welcome");
         background = new Background(ctx);
-        player = new Player(ctx);
+        player = new Player(ctx, playerSettings);
         new keyboardEventsHandler(game, player);
 
         loadEventListeners();
@@ -133,5 +133,4 @@
 
     init();
 
-} ());
-
+} (gilesSettings));

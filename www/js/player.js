@@ -1,27 +1,20 @@
-function Player(context){
+function Player(context, settings){
 
 	var playerImage = new Image();  
-    playerImage.src = "images/Giles9_4x.png"; 	
-
-    var settings = {            
-        status : "still",
-        width: 512,
-        height: 128,
-        numberOfFrames: 4,
-        ticksPerFrame: 4,
-        x: 0,
-        y: 252,
-        direction: 0,
-        speed: 0,
-        maximumSpeed: 6,
-        minimumSpeed: -6,
-        rate:2
-    },
+    playerImage.src = "images/Giles9_4x.png",
     frameIndex = 4,
-    tickCount = 0;
+    tickCount = 0,
+    minPosition = undefined,
+    maxPosition = undefined;
+    globalPosition = undefined;
 
     function setDirection(locIn){
     	settings.direction = locIn;
+    };
+
+    function setLimits(){
+    	minPosition = 0;
+    	maxPosition = settings.width / 2;
     };
 
 	function draw() {
@@ -38,24 +31,19 @@ function Player(context){
 		);
 		switch(settings.status){
 			case "right": 
-				update(0);
+				update();
 				setDirection(0);
 				break;
 			case "left": 
-				update(0); 
+				update(); 
 				setDirection(128);
 				break;
 			case "jump": 
-				update(0);
-				setDirection(0);
-				//console.log("jumping");
-				//update(0);
-				//frameIndex = 4;
-				//settings.speed = 0;
+				update();
+				frameIndex = 4;
 				break;
 			case "stopped": 
-				//console.log("Da stopped");
-				update(0);
+				update();
 				frameIndex = 4;
 				break;
 			default:	
@@ -63,47 +51,66 @@ function Player(context){
 		}
 	};
 
-	function speedController(){
-		if(settings.speed > settings.maximumSpeed){
-			//console.log("more than max");
-			settings.x += settings.maximumSpeed;
-		}else if(settings.speed < settings.minimumSpeed){
-			//console.log("Less than min");
-			settings.x = (settings.x + settings.minimumSpeed);
-		}else{
-			//console.log("Not faster or slower");
-			//console.log(settings.speed);
-			settings.x += settings.speed;
-		}
-		//settings.y += y;
+	function speedController(callback, stick){
+		// Ensure speed does not exceed the max or min
+		// ??? += refactor
+		if(!stick){
+			if(settings.speed > settings.maximumSpeed){
+				settings.x += settings.maximumSpeed;
+			}else if(settings.speed < settings.minimumSpeed){
+				settings.x = (settings.x + settings.minimumSpeed);
+			}else{
+				settings.x += settings.speed;
+			};	
+		};
+
+		callback();
 	};
 
-    function update(z) { 
-    	console.log(settings.speed);		
-    	speedController();
-		tickCount += 1;
+    function update(){
+    	// If position is at boundary pass stick variable
+    	var stick = false;
+    	if(settings.direction == 128){
+    		if(settings.x < minPosition){
+    			stick = true;
+    		};
+    	}else{
+    		if(settings.x > maxPosition){
+    			stick = true;
+    		};
+    	};
+    	speedController(frameController, stick);
+    };
+
+    function frameController(){
+    	// Manage player frame
+    	tickCount += 1;
 		if (tickCount > settings.ticksPerFrame) {
-			//console.log("tick count more than ticksPerFrame");
-			//console.log(frameIndex);
+			// new Refactor the way global positioning is handled
+			// 
+		    if(settings.direction == 128 && globalPosition > 0){
+        		globalPosition += -1;
+        	}else{
+        		if(globalPosition < settings.endPosition){
+            		globalPosition += 1;    			
+        		}
+        	}
             tickCount = 0;
             if (frameIndex < (settings.numberOfFrames - 1)) {  
-            	//console.log("True");
                 frameIndex += 1;
             } else {
-            	//console.log("False");
                 frameIndex = 0;
+
             }
         }
     };
 
 	function walkLeft(){
-		//console.log("walk left");
 		settings.status = "left";
 		settings.speed = settings.speed - settings.rate; 
 	};
 
 	function walkRight(){
-		//console.log("walk right");
 		settings.status = "right";
 		settings.speed = settings.speed + settings.rate; 
 	};
@@ -112,13 +119,9 @@ function Player(context){
 		console.log("jump");
 		settings.status = "jump";
 		settings.speed = 0;
-		//console.log(settings.rate);
-		//settings.status = "right";
-		//settings.speed = settings.speed + settings.rate; 
 	};
 
 	function stop(){
-		//console.log("Stop player");
 		settings.status = "stopped";
 		settings.speed = 0;
 	};
@@ -137,11 +140,21 @@ function Player(context){
 			jump : function(){
 				doAJump();
 			},
+			getGlobalPosition : function(){
+				return globalPosition;
+			},
 			stop : function(){
 				stop();
 			}
 		}
 	};
+
+	function init(){
+		globalPosition = 0;
+		setLimits();
+	};
+
+	init();
 
 	return playerInterface();
 	
