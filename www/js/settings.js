@@ -1,5 +1,5 @@
 var gilesSettings = {            
-    status : "still",
+    status : "stopped",
     width: 512,
     height: 128,
     numberOfFrames: 4,
@@ -8,6 +8,7 @@ var gilesSettings = {
     y: 252,
     direction: 0,
     speed: 0,
+    speedString: "slow",
     maximumSpeed: 6,
     minimumSpeed: -6,
     rate:2,

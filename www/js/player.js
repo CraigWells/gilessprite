@@ -29,21 +29,21 @@ function Player(context, settings){
 			settings.width / settings.numberOfFrames,
 			settings.height
 		);
+		update();
 		switch(settings.status){
 			case "right": 
-				update();
 				setDirection(0);
 				break;
 			case "left": 
-				update(); 
 				setDirection(128);
 				break;
 			case "jump": 
-				update();
 				frameIndex = 4;
 				break;
+			case "big jump":
+				frameIndex = 4;
+				break;	
 			case "stopped": 
-				update();
 				frameIndex = 4;
 				break;
 			default:	
@@ -57,13 +57,16 @@ function Player(context, settings){
 		if(!stick){
 			if(settings.speed > settings.maximumSpeed){
 				settings.x += settings.maximumSpeed;
+				settings.speedString = "fast";
 			}else if(settings.speed < settings.minimumSpeed){
 				settings.x = (settings.x + settings.minimumSpeed);
+				settings.speedString = "fast";
 			}else{
 				settings.x += settings.speed;
+				settings.speedString = "slow";
 			};	
 		};
-
+		console.log(settings.speedString);
 		callback();
 	};
 
@@ -116,8 +119,14 @@ function Player(context, settings){
 	};
 
 	function doAJump(){
-		console.log("jump");
-		settings.status = "jump";
+		
+		if(settings.status === "jump"){
+			console.log("big jump");
+			settings.status = "big jump";
+		}else{
+			console.log("jump");
+			settings.status = "jump";
+		}
 		settings.speed = 0;
 	};
 
