@@ -85,6 +85,7 @@
                 "state" : "gameover",
                 "count" : 0
             });
+            player.reset();
         });
     };
 
@@ -133,4 +134,4 @@
 
     init();
 
-} (gilesSettings));
+} (getDefaultCharSettings()));

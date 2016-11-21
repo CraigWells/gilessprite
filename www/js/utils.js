@@ -8,6 +8,20 @@ var utils = {
     	obj.set(attr, temp);
     	return temp;
     },
+    addedValues : function(args){
+        var output = 0;
+        for(var i = 0; i < args.length; i++){
+            output += args[i];
+        }
+        return output;
+    },
+    noParamDoCallback(param, callback, args){
+        if(!param){
+            return callback(args);
+        }else{
+            return args[0];
+        }
+    },
     clearCanvas : function(ctx, canvas){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     },

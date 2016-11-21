@@ -1,12 +1,13 @@
-function Player(context, settings){
+function Player(context, settingsIn){
 
 	var playerImage = new Image();  
     playerImage.src = "images/Giles9_4x.png",
     frameIndex = 4,
     tickCount = 0,
     minPosition = undefined,
-    maxPosition = undefined;
-    globalPosition = undefined;
+    maxPosition = undefined,
+    globalPosition = undefined,
+    settings = settingsIn;
 
     function setDirection(locIn){
     	settings.direction = locIn;
@@ -29,7 +30,7 @@ function Player(context, settings){
 			settings.width / settings.numberOfFrames,
 			settings.height
 		);
-		update();
+		update();		
 		switch(settings.status){
 			case "right": 
 				setDirection(0);
@@ -38,6 +39,7 @@ function Player(context, settings){
 				setDirection(128);
 				break;
 			case "jump": 
+			settings.y = settings.y -10;
 				frameIndex = 4;
 				break;
 			case "big jump":
@@ -48,23 +50,21 @@ function Player(context, settings){
 				break;
 			default:	
 				break;		
-		}
+		};
 	};
 
 	function speedController(callback, stick){
 		// Ensure speed does not exceed the max or min
-		// ??? += refactor
-		if(!stick){
-			if(settings.speed > settings.maximumSpeed){
-				settings.x += settings.maximumSpeed;
-				settings.speedString = "fast";
-			}else if(settings.speed < settings.minimumSpeed){
-				settings.x = (settings.x + settings.minimumSpeed);
-				settings.speedString = "fast";
-			}else{
-				settings.x += settings.speed;
-				settings.speedString = "slow";
-			};	
+		// and set speedString
+		if(settings.speed > settings.maximumSpeed){
+			settings.x = utils.noParamDoCallback(stick, utils.addedValues, [settings.x, settings.maximumSpeed]);
+			settings.speedString = "fast";
+		}else if(settings.speed < settings.minimumSpeed){
+			settings.x = utils.noParamDoCallback(stick, utils.addedValues, [settings.x, settings.minimumSpeed]);
+			settings.speedString = "fast";
+		}else{
+			settings.x = utils.noParamDoCallback(stick, utils.addedValues, [settings.x, settings.speed]);
+			settings.speedString = "slow";
 		};
 		console.log(settings.speedString);
 		callback();
@@ -154,6 +154,9 @@ function Player(context, settings){
 			},
 			stop : function(){
 				stop();
+			},
+			reset : function(){
+				settings = getDefaultCharSettings();
 			}
 		}
 	};
